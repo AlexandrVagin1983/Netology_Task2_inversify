@@ -110,4 +110,3 @@ const container = new inversify.Container();
 container.bind(BooksRepository).toSelf()
 
 module.exports = {container, BooksRepository}
-//module.exports = BooksRepository

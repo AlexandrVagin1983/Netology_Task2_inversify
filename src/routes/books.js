@@ -8,7 +8,6 @@ const BooksRepository = require('./../models/BookRepository').BooksRepository
 
 router.get('/', async (req, res) => {    
 
-    //const BookRepository = new ClassBookRepository()
     const repo = container.get(BooksRepository);
     const books = await repo.getBooks()
     res.render('books/index',{
@@ -26,7 +25,6 @@ router.get('/create', (req, res) => {
 router.post('/create', async (req, res) => {
 
     const {title, description, authors, favorite, fileCover} = req.body
-    //const BookRepository = new ClassBookRepository()
     const repo = container.get(BooksRepository);
     await repo.createBook(title, description, authors, favorite, fileCover)
     res.redirect('/book')
@@ -34,8 +32,7 @@ router.post('/create', async (req, res) => {
 
 router.get('/:id', async (req, res) => {    
 
-    const {id} = req.params;
-    //const BookRepository = new ClassBookRepository()
+    const {id} = req.params
     const repo = container.get(BooksRepository);
     const result = await repo.getBook(id)
     res.render("books/view", {
@@ -47,8 +44,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/update/:id', async (req, res) => {
 
-    const {id} = req.params;
-    //const BookRepository = new ClassBookRepository()
+    const {id} = req.params
     const repo = container.get(BooksRepository);
     const result = await repo.getBook(id)
     res.render("books/update", {
@@ -59,9 +55,8 @@ router.get('/update/:id', async (req, res) => {
 
 router.post('/update/:id', async (req, res) => {
 
-    const {id} = req.params;
+    const {id} = req.params
     const {title, description, authors, favorite, fileCover} = req.body;
-    //const BookRepository = new ClassBookRepository()
     const repo = container.get(BooksRepository)
     repo.updateBook(id, title, description)
     res.redirect(`/book/${id}`);
@@ -69,8 +64,7 @@ router.post('/update/:id', async (req, res) => {
 
 router.post('/delete/:id', async (req, res) => {
 
-    const {id} = req.params;
-    //const BookRepository = new ClassBookRepository()
+    const {id} = req.params
     const repo = container.get(BooksRepository)
     await repo.deleteBook(id)
     res.redirect(`/book`)
