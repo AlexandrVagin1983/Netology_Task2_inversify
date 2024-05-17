@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  storage:
+    image: redis
+    volumes:
+      - ./data:/data
+  counter:
+    image: vagin1983/counter:v1.0.0
+    environment:
+      - PORT=3002
+      - REDIS_URL=redis://storage
+    ports:
+      - 3002:3002
+    depends_on:
+      - storage
+  mongodb:
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME:-root}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${DB_NAME:-books_database}
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USERNAME:-root}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASSWORD:-password}
+    depends_on:
+      - mongodb
+  books:
+    build: .
+    image: vagin1983/books:v2.0.0
+    environment:
+      - PORT=3000
+      - PORT_REIDS=3002
+      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_NAME=${DB_NAME:-books_database}
+      - DB_HOST=mongodb://mongodb:27017
+    ports:
+      - 80:3000
+    depends_on:
+      - counter
+      - mongo-express
